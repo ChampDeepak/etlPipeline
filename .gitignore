@@ -1,3 +1,7 @@
+google-sheets-credentials.json
+*.json
+credentials/
+
 .venv/
 venv/
 __pycache__/
@@ -23,6 +27,11 @@ pip-wheel-metadata/
 .idea/
 .vscode/
 .DS_Store
+
+# Do not commit service account credentials
+google-sheets-credentials.json
+*.credentials.json
+credentials/
 
 # Byte-compiled / optimized / DLL files
 # (already covered by patterns above, left for clarity)
