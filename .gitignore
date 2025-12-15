@@ -1,0 +1,29 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+pip-wheel-metadata/
+*.manifest
+*.spec
+.coverage
+.cache
+.pytest_cache/
+.mypy_cache/
+.ropeproject
+.env
+.venv
+.venv/**
+.idea/
+.vscode/
+.DS_Store
+
+# Byte-compiled / optimized / DLL files
+# (already covered by patterns above, left for clarity)
+# *.py[cod]
