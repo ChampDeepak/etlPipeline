@@ -11,15 +11,22 @@ from dotenv import load_dotenv
 # 1. CONFIGURATION
 # ==========================================
 
+# Google Sheets Config
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-SERVICE_ACCOUNT_FILE = '../config/google-sheets-credentials.json'
-SPREADSHEET_ID = '1bQJwagSURpl2vcN3RUdUwDDK3zjhXtPLKX2kYO_O4HU'
-RANGE_NAME = 'netflix!A:L'
+SERVICE_ACCOUNT_FILE = 'google-sheets-credentials.json' # This file will be created by GitHub Actions
+SPREADSHEET_ID = '1bQJwagSURpl2vcN3RUdUwDDK3zjhXtPLKX2kYO_O4HU' 
+RANGE_NAME = 'netflix!A:L' 
 
 # Database Connection
-load_dotenv('../config/.env')
-# Ensure this matches your actual NeonDB connection string
-DATABASE_URL = "postgres://neon:npg@localhost:5431/netflix"
+load_dotenv()
+
+# PRIORITY: Try to get URL from Environment Variable (GitHub Actions), 
+# otherwise fall back to your local testing string.
+DATABASE_URL = os.getenv('DATABASE_URL') 
+
+if not DATABASE_URL:
+    # Fallback for local testing if .env is missing
+    DATABASE_URL = "postgres://neon:npg@localhost:5431/netflix"
 
 # ==========================================
 # 2. HELPER FUNCTIONS

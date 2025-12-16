@@ -1,0 +1,38 @@
+name: Automated ETL Pipeline
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Runs every hour (at minute 0)
+  workflow_dispatch:      # Allows you to click "Run Now" manually for testing
+
+jobs:
+  run_etl:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out the repository code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Set up Python environment
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      # 3. Install dependencies
+      - name: Install libraries
+        run: |
+          pip install -r requirements.txt
+
+      # 4. Create the Credentials file from GitHub Secrets
+      - name: Create Google Credentials File
+        run: |
+          echo '${{ secrets.GCP_KEYS_JSON }}' > google-sheets-credentials.json
+
+      # 5. Run the ETL Script
+      - name: Run ETL Pipeline
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          python scripts/etl.py
