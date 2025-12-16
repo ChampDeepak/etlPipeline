@@ -11,18 +11,24 @@ from dotenv import load_dotenv
 # 1. CONFIGURATION
 # ==========================================
 
+# ==========================================
+# File Paths (resolve relative to project root)
+# ==========================================
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CONFIG_DIR = os.path.join(PROJECT_ROOT, 'config')
+
 # Google Sheets Config
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-SERVICE_ACCOUNT_FILE = 'google-sheets-credentials.json' # This file will be created by GitHub Actions
+SERVICE_ACCOUNT_FILE = os.path.join(CONFIG_DIR, 'google-sheets-credentials.json')
 SPREADSHEET_ID = '1bQJwagSURpl2vcN3RUdUwDDK3zjhXtPLKX2kYO_O4HU' 
 RANGE_NAME = 'netflix!A:L' 
 
 # Database Connection
-load_dotenv()
+load_dotenv(os.path.join(CONFIG_DIR, '.env'))
 
 # PRIORITY: Try to get URL from Environment Variable (GitHub Actions), 
 # otherwise fall back to your local testing string.
-DATABASE_URL = os.getenv('DATABASE_URL') 
+DATABASE_URL = os.getenv('DATABASE_URL', 'postgres://neon:npg@localhost:5431/netflix') 
 
 if not DATABASE_URL:
     # Fallback for local testing if .env is missing
