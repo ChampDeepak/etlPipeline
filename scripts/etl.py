@@ -83,7 +83,14 @@ def load_to_db(df):
     print(f"💾 LOAD: Inserting {len(df)} new rows into Database...")
     conn = None
     try:
-        conn = psycopg2.connect(dsn=DATABASE_URL)
+        # Improved connection with keepalives
+        conn = psycopg2.connect(
+            dsn=DATABASE_URL,
+            keepalives=1,
+            keepalives_idle=30,
+            keepalives_interval=10,
+            keepalives_count=5
+        )
         conn.autocommit = False
         cur = conn.cursor()
 
@@ -93,7 +100,7 @@ def load_to_db(df):
             'release_year', 'rating', 'duration', 'description'
         ]].values.tolist()
 
-        # 2. Reference Data extraction (Same as before)
+        # 2. Reference Data extraction
         ref_data = {
             'directors': (safe_extract_unique(df['director']), 'director_name', 'director_id', 'show_directors'),
             'actors':    (safe_extract_unique(df['cast_members']), 'actor_name', 'actor_id', 'show_cast'),
@@ -101,17 +108,23 @@ def load_to_db(df):
             'genres':    (safe_extract_unique(df['listed_in']), 'genre_name', 'genre_id', 'show_genres')
         }
 
-        # 3. Reference Insert
+        # 3. Reference Insert & Map Building
         id_maps = {} 
         for table, (unique_values, col_name, id_col, _) in ref_data.items():
             insert_values = [(v,) for v in unique_values if v and len(v) > 0]
+            
+            # Insert New Values
             if insert_values:
                 insert_sql = f"INSERT INTO {table} ({col_name}) VALUES %s ON CONFLICT ({col_name}) DO NOTHING"
                 extras.execute_values(cur, insert_sql, insert_values)
+            
+            # Fetch IDs (Re-execute SELECT to get everything including old values)
+            # This is where your error happened. 
             cur.execute(f"SELECT {col_name}, {id_col} FROM {table}")
-            id_maps[table] = {name: id for name, id in cur.fetchall()}
+            results = cur.fetchall() # Fetch immediately to clear cursor state
+            id_maps[table] = {name: id for name, id in results}
 
-        # 4. Map Junctions
+        # 4. Map Junctions (Pure Python - No DB calls here)
         junction_data = {'show_directors': [], 'show_cast': [], 'show_countries': [], 'show_genres': []}
 
         for _, row in df.iterrows():
@@ -142,14 +155,20 @@ def load_to_db(df):
 
         conn.commit()
         print("✅ DB Load Successful.")
-        return True # Return success flag
+        return True 
 
     except Exception as e:
-        if conn: conn.rollback()
         print(f"❌ Error during loading: {e}")
+        # Only try to rollback if the connection is arguably still open
+        if conn and not conn.closed:
+            try:
+                conn.rollback()
+            except Exception:
+                pass
         return False
     finally:
-        if conn: conn.close()
+        if conn and not conn.closed:
+            conn.close()
 
 # ==========================================
 # 4. MARK PROCESSED ROWS (Write Back)

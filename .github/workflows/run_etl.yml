@@ -30,7 +30,8 @@ jobs:
       # 4. Create the Credentials file from GitHub Secrets
       - name: Create Google Credentials File
         run: |
-          echo '${{ secrets.GCP_KEYS_JSON }}' > google-sheets-credentials.json
+          mkdir -p config
+          echo '${{ secrets.GCP_KEYS_JSON }}' > config/google-sheets-credentials.json
 
       # 5. Run the ETL Script
       - name: Run ETL Pipeline
