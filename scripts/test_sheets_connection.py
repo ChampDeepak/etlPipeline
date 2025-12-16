@@ -16,7 +16,7 @@ except ImportError as e:
     sys.exit(1)
 
 # Path to your downloaded JSON credentials
-CREDENTIALS_FILE = 'google-sheets-credentials.json'
+CREDENTIALS_FILE = '../config/google-sheets-credentials.json'
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
 # Your Google Sheet ID (from the URL)

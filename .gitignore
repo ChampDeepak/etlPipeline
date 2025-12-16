@@ -1,6 +1,3 @@
-google-sheets-credentials.json
-*.json
-credentials/
 
 .venv/
 venv/
@@ -28,10 +25,21 @@ pip-wheel-metadata/
 .vscode/
 .DS_Store
 
-# Do not commit service account credentials
-google-sheets-credentials.json
-*.credentials.json
-credentials/
+# Do not commit sensitive config files or credentials
+config/.env
+config/google-sheets-credentials.json
+config/*.credentials.json
+config/credentials/
+
+# Logs and data
+logs/
+logs/**
+data/
+
+# Do not commit secrets or local overrides
+**/.env.local
+**/*.key
+**/*.pem
 
 # Byte-compiled / optimized / DLL files
 # (already covered by patterns above, left for clarity)
