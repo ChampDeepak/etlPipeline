@@ -4,6 +4,8 @@ on:
   schedule:
     - cron: '0 * * * *' # Runs every hour (at minute 0)
   workflow_dispatch:      # Allows you to click "Run Now" manually for testing
+  repository_dispatch:     # <--- ADD THIS
+    types: [sheet_update]  # Custom event name
 
 jobs:
   run_etl:
