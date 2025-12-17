@@ -2,9 +2,9 @@ name: Automated ETL Pipeline
 
 on:
   schedule:
-    - cron: '0 * * * *' # Runs every hour (at minute 0)
+    - cron: '0 0 * * *' # Runs once daily at midnight UTC
   workflow_dispatch:      # Allows you to click "Run Now" manually for testing
-  repository_dispatch:     # <--- ADD THIS
+  repository_dispatch:     # Triggered when new row is added to sheet
     types: [sheet_update]  # Custom event name
 
 jobs:
