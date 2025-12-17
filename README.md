@@ -1,5 +1,15 @@
 # etlPipeline
 
+## Project Discription
+This project provides a system that acts as a bridge between Google Sheets and Robust PostgreSql DB. If a new row is added in the Google Sheet, the system will validate the data and then add that Data in PSQL DB. This system can we used in a case where class instructor is taking the attendance on Google Sheet but want to automate that attendance data migration to PSQL DB. This is just one use case example, this system can used any scenario where we want to automate new data migration from Google Sheets to PSQL DB. 
+
+## I learned following things through this project: 
+1. ETL Pipeline Design
+2. Google App Scripts
+3. Github Actions
+4. psycopg2 (Python module to intract with PSQL DB)
+5. Google Sheets API
+
 ## Setup
 
 1. Create and activate a virtual environment:
